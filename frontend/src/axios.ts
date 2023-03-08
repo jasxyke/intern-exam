@@ -17,10 +17,10 @@ axiosClient.interceptors.request.use((config) => {
 
 axiosClient.interceptors.response.use((res) => res, err => {
     if (err.response && err.response.status === 401) {
-        localStorage.clear()
-        window.location.reload()
+        localStorage.clear();
+        //window.location.reload()
         // routes.navigate('/login')
-        return err
+        return err.response
     } throw err
 })
 

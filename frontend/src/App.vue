@@ -3,9 +3,13 @@
 </template>
 
 <script lang="ts">
+  import {tokenState} from './states/TokenState'
   export default{
     created(){
-      this.$router.push('/login')
+      let token = tokenState.getToken()
+      if(!token){
+        this.$router.push('/login')
+      }
     }
   }
 </script>

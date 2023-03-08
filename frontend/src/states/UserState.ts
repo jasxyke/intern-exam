@@ -1,8 +1,13 @@
 import {reactive} from 'vue'
 
 export const userState = reactive({
-    user: {},
-    setUser(userObj: object){
+    user: {
+        id:0,
+        fullname:'',
+        email:'',
+        role_id:0
+    },
+    setUser(userObj: any){
         this.user = userObj; 
     },
     getUser(){

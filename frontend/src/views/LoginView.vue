@@ -5,7 +5,8 @@
           <h2 class="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">Sign in</h2>
           <p class="text-center">Intern exam app</p>
         </div>
-        <form class="mt-8 space-y-6" action="#" method="POST">
+        <p v-if="hasError" class="text-center">{{ error }}</p>
+        <form class="mt-8 space-y-6">
           <div class="-space-y-px rounded-md shadow-sm">
             <div>
               <label for="email-address" class="sr-only">Email address</label>
@@ -39,6 +40,7 @@
   
   <script lang="ts">
   import axios from '../axios'
+  import { tokenState } from '../states/TokenState';
   export default{
     data(){
       return{
@@ -55,31 +57,45 @@
       btnDisplay(){
         return {'hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 bg-indigo-600': this.isSubmitReady,
                 'bg-gray-600': !this.isSubmitReady}
+      },
+      hasError(){
+        return this.error != '';
       }
     },
     methods:{
       async login(){
-        // this.loading = true;
-        // if(!this.email || !this.password){
-        //     alert('please fill in the fields');
-        //     return;
-        // }
-        // try{
-        //   let res = await axios.post('/login',{
-        //       email: this.email,
-        //       password: this.password
-        // });
-        // //let token = response.data.token;
-        // console.log(res.data);
-        // console.log(res.statusText);
-        // //localStorage.setItem('token', JSON.stringify(token));
-        // this.loading = false;
-        // }catch(err){
-        //   window.alert(err)
-        //   console.log(err);
-        //   this.loading = false;
-        // }
+        this.loading = true;
+        if(!this.email || !this.password){
+            alert('please fill in the fields');
+            return;
+        }
+        try{
+          let res = await axios.post('/login',{
+              email: this.email,
+              password: this.password
+        });
+        console.log(res.status);
+        
+        if(res.status == 201){
+          let token = res.data.token;
+          console.log(res.data);
+          console.log(res.statusText);
+          console.log(token);
+          this.setError('')
+          tokenState.setToken(token)
           this.$router.push('/home')
+        }else{
+          this.setError(res.data.message);
+        }
+        }catch(err:any){
+          console.log(err);
+          this.setError(err);
+          this.loading = false;
+        }
+        this.loading = false;
+      },
+      setError(err:any){
+        this.error = err;
       }
     }
   }
