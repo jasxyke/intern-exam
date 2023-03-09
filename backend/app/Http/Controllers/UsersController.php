@@ -42,7 +42,7 @@ class UsersController extends Controller
         ]);
 
         $response = [
-            'user' => $user
+            'user' => $user->load('role')
         ];
 
         return response($response, 201);
