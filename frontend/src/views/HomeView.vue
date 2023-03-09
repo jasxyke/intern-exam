@@ -1,7 +1,7 @@
 <template>
     <div class="box">
         <h2>
-            Hello, {{ user.user.fullname }}
+            Hello, {{ user?.user?.fullname ?? 'unknown' }}
         </h2>
     </div>
     
@@ -26,6 +26,9 @@ export default defineComponent({
             try{
             const res = await axios.get('/user');
             let user = res.data;
+            if(!user){
+                throw 'no user found';
+            }
             userState.setUser(user);
         }catch(err){
             console.log(err);

@@ -33,20 +33,40 @@
               <router-link to="/users" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Users</router-link>
   
               <router-link to="/roles" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Roles</router-link>
-  
             </div>
           </div>
         </div>
+        <button class="btn btn-primary logout-btn"
+          @click.prevent="logout"
+        >Logout</button>
       </div>
     </div>
 
   </nav>
 </template>
 <script lang="ts">
+import axiosClient from '../axios';
+import { tokenState } from '../states/TokenState';
+import { userState } from '../states/UserState';
+
 export default {
+  methods:{
+    async logout(){
+      console.log('logout');
+      
+      await axiosClient.post('/logout');
+      tokenState.setToken('')
+      userState.setUser(null)
+      localStorage.clear()
+      this.$router.push('/login')
+      
+    }
+  }
 
 }
 </script>
-<style lang="">
-    
+<style scoped>
+    .logout-btn{
+      color: white;
+    }
 </style>

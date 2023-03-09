@@ -11,8 +11,10 @@ export default {
     },
     created(){
         let token = tokenState.getToken()
-      if(!token){
-        this.$router.push('/login')
+        console.log(token);
+      if(token == null){
+        //this.$router.push('/login')
+        window.location.href = "/login"
       }
     }
 }

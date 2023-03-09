@@ -1,12 +1,14 @@
 import {reactive} from 'vue'
 
 export const tokenState = reactive({
-    token: '',
-    setToken(tokenStr: string){
-        this.token = tokenStr;
-        localStorage.setItem('token', JSON.stringify(this.token))
+    setToken(token: string){
+        localStorage.setItem('token', JSON.stringify(token))
     },
     getToken(){
-        return this.token;
+        let token = localStorage.getItem('token');
+        if (token != null) {
+            return JSON.parse(token)
+        }
+        return null;
     }
 })

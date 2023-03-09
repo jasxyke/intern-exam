@@ -50,6 +50,13 @@
          loading: false
       }
     },
+    created() {
+        if(tokenState.getToken() !== null){
+          this.$router.push('/home')
+        }else{
+          this.$router.push('/login')
+        }
+    },
     computed:{
       isSubmitReady(){
         return !(!this.email || !this.password) && !this.loading;
