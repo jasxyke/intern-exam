@@ -20,7 +20,7 @@ axiosClient.interceptors.response.use((res) => res, err => {
         localStorage.clear();
         //window.location.reload()
         // routes.navigate('/login')
-        return err.response
+        return err
     } throw err
 })
 

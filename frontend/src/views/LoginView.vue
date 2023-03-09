@@ -5,7 +5,7 @@
           <h2 class="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">Sign in</h2>
           <p class="text-center">Intern exam app</p>
         </div>
-        <p v-if="hasError" class="text-center">{{ error }}</p>
+        <p v-if="hasError" class="text-center err">{{ error }}</p>
         <form class="mt-8 space-y-6">
           <div class="-space-y-px rounded-md shadow-sm">
             <div>
@@ -73,20 +73,19 @@
           let res = await axios.post('/login',{
               email: this.email,
               password: this.password
-        });
-        console.log(res.status);
-        
-        if(res.status == 201){
+        })as any;
+          if(res?.response?.data?.message){
+             this.setError(res.response.data.message);
+             this.loading = false;
+             return
+          }
           let token = res.data.token;
-          console.log(res.data);
           console.log(res.statusText);
           console.log(token);
           this.setError('')
           tokenState.setToken(token)
           this.$router.push('/home')
-        }else{
-          this.setError(res.data.message);
-        }
+          
         }catch(err:any){
           console.log(err);
           this.setError(err);
@@ -106,5 +105,9 @@
     display: flex;
     justify-content: center;
     height: 100vh;
+  }
+
+  .err{
+    color: red;
   }
 </style>

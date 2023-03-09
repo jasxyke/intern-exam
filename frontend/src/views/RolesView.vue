@@ -42,7 +42,6 @@
         <RoleEditForm
             id="editRoleModal"
             @edit-role="editRole"
-            :role="role"
         ></RoleEditForm>
         <AddRoleForm
             id="addRoleModal"
@@ -57,7 +56,7 @@ import { defineComponent } from 'vue';
 import axiosClient from '../axios';
 import RoleEditForm from '../components/RoleEditForm.vue'
 import AddRoleForm from '../components/AddRoleForm.vue';
-
+import {computed} from 'vue';
 import { roleState } from '../states/RoleStates';
 
 export default defineComponent({
@@ -67,17 +66,23 @@ export default defineComponent({
     },
     data(){
         return{
-            role: null,
+            role: {},
             roles: [{name: 'roleSample', description:'descriptSample'}],
         }
     },
     created(){
         this.getRoles();
     },
+    provide(){
+        return{
+            role: computed(()=>this.role)
+        }
+    },
     methods:{
-        setRole(role:any){
-            console.log(role);
-            roleState.setRole(role);
+        setRole(roleObj:any){
+            console.log(roleObj);
+            //roleState.setRole(role);
+            this.role = roleObj;
         },
         async addRole(role:any){
             try{
