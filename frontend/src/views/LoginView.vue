@@ -5,7 +5,10 @@
           <h2 class="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">Sign in</h2>
           <p class="text-center">Intern exam app</p>
         </div>
-        <p v-if="hasError" class="text-center err">{{ error }}</p>
+        <ErrorDisplay
+          v-if="errors != null"
+          :errors="errors"
+        ></ErrorDisplay>
         <form class="mt-8 space-y-6">
           <div class="-space-y-px rounded-md shadow-sm">
             <div>
@@ -40,15 +43,19 @@
   
   <script lang="ts">
   import axios from '../axios'
+import ErrorDisplay from '../components/ErrorDisplay.vue';
   import { tokenState } from '../states/TokenState';
   export default{
     data(){
       return{
          email: 'jasxyke23.jxc@gmail.com',
          password: 'passwor',
-         error: '',
+         errors: null,
          loading: false
       }
+    },
+    components:{
+      ErrorDisplay
     },
     created() {
         if(tokenState.getToken() !== null){
@@ -64,9 +71,6 @@
       btnDisplay(){
         return {'hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 bg-indigo-600': this.isSubmitReady,
                 'bg-gray-600': !this.isSubmitReady}
-      },
-      hasError(){
-        return this.error != '';
       }
     },
     methods:{
@@ -77,31 +81,33 @@
             return;
         }
         try{
-          let res = await axios.post('/login',{
+          var res = await axios.post('/login',{
               email: this.email,
               password: this.password
         })as any;
+        console.log(res);
           if(res?.response?.data?.message){
-             this.setError(res.response.data.message);
+            console.log(res.response.data.message);
+             this.setError({err:[res.response.data.message]});
              this.loading = false;
              return
           }
           let token = res.data.token;
           console.log(res.statusText);
           console.log(token);
-          this.setError('')
+          this.setError(null)
           tokenState.setToken(token)
           this.$router.push('/home')
           
         }catch(err:any){
-          console.log(err);
-          this.setError(err);
+          console.log(err.response.data);
+          this.setError(err.response.data.errors);
           this.loading = false;
         }
         this.loading = false;
       },
       setError(err:any){
-        this.error = err;
+        this.errors = err;
       }
     }
   }

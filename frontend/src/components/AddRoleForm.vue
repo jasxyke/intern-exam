@@ -13,6 +13,10 @@
   
         <!-- Modal body -->
         <div class="modal-body">
+          <ErrorDisplay
+            v-if="errors != null"
+            :errors="errors"
+          ></ErrorDisplay>
             <form>
                 <div class="form-group">
                   <label for="name">Name:</label>
@@ -31,7 +35,7 @@
   
         <!-- Modal footer -->
         <div class="modal-footer">
-            <button type="button" class="btn btn-success" data-bs-dismiss="modal"
+            <button type="button" class="btn btn-success"
                     @click="add"
             >Add</button>
           <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
@@ -43,22 +47,39 @@
       
 </template>
 <script lang="ts">
+import axiosClient from '../axios';
+import ErrorDisplay from './ErrorDisplay.vue';
 export default {
     emits: ['addRole'],
     data(){
         return{
             name: '',
-            description: ''
+            description: '',
+            errors:null
         }
     },
+    components:{
+      ErrorDisplay
+    },
     methods:{
-        add(){
-            this.$emit('addRole',{
+        async add(){
+            let role = {
                 name:this.name,
                 description: this.description
-            });
-            this.name = '',
-            this.description = '';
+            }
+            try{
+                let res = await axiosClient.post('/add-role',role);
+                console.log(res.data);
+                this.$emit('addRole',res.data);
+                this.name = '',
+                this.description = '';
+            }catch(err){
+                console.log(err); 
+                this.setError(err);
+            }
+        },
+        setError(err:any){
+          this.errors = err?.response.data.errors;
         }
     }
 

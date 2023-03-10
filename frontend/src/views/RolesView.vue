@@ -39,10 +39,10 @@
                 </td>
             </tr>
         </table>
-        <RoleEditForm
+        <!-- <RoleEditForm
             id="editRoleModal"
             @edit-role="editRole"
-        ></RoleEditForm>
+        ></RoleEditForm> -->
         <AddRoleForm
             id="addRoleModal"
             @add-role="addRole"
@@ -61,11 +61,11 @@ import {computed} from 'vue';
 export default defineComponent({
     components:{
         RoleEditForm,
-        AddRoleForm
+        AddRoleForm,
     },
     data(){
         return{
-            role: {},
+            role: null,
             roles: [{id:'', name: 'roleSample', description:'descriptSample'}],
         }
     },
@@ -80,22 +80,10 @@ export default defineComponent({
     methods:{
         setRole(roleObj:any){
             console.log(roleObj);
-            //roleState.setRole(role);
             this.role = roleObj;
         },
         async addRole(role:any){
-            try{
-                let res = await axiosClient.post('/add-role',role);
-                console.log(res.status);
-                if(res.status == 201){
-                    console.log(res.data);
-                    this.roles.push(res.data);
-                }else{
-                    console.log(res.data.message);
-                }
-            }catch(err){
-                console.log(err); 
-            }
+            this.roles.push(role);
         },
         async editRole(role:any){
             try{

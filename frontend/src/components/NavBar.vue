@@ -59,7 +59,7 @@ export default {
       userState.setUser(null)
       localStorage.clear()
       this.$router.push('/login')
-      
+      //window.location.reload()
     }
   }
 

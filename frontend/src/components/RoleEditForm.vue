@@ -1,5 +1,4 @@
 <template lang="">
-
     <!-- The Modal -->
 <div class="modal">
     <div class="modal-dialog">
@@ -13,25 +12,28 @@
   
         <!-- Modal body -->
         <div class="modal-body">
+          <div class="alert alert-danger" v-for="(error, index) in errors" :key="index">
+                {{error[0]}}
+              </div>
             <form>
               <div class="form-group">
                 <label for="id">Id:</label>
                 <input type="text" class="form-control" placeholder="Id"
-                  v-model="role_.id"
+                  v-model="id"
                   name="id" disabled
                 >
               </div>
                 <div class="form-group">
                   <label for="name">Name:</label>
                   <input type="text" class="form-control" placeholder="Role name"
-                    v-model="role_.name"
+                    v-model="name"
                     name="name"
                   >
                 </div>
                 <div class="form-group">
                   <label for="desc">Description: </label>
                   <textarea name="desc" type="textarea" class="form-control" placeholder="Description"
-                  v-model="role_.description"
+                  v-model="description"
                   ></textarea>
                 </div>
               </form>
@@ -53,14 +55,17 @@
 <script lang="ts">
 export default {   
     emits: ['editRole'],
-    inject:{
-      role:{
-        from:'role'
-      }
-    },
+    props:['role'],
+    // inject:{
+    //   role:{
+    //     from:'role'
+    //   }
+    // },
     data(){
         return{
-            role_: this.role
+            name:this.role.name,
+            description: this.role.description,
+            errors: []
         }
     },
     computed:{
@@ -68,10 +73,9 @@ export default {
     methods:{
       edit(){
       console.log('editied role');
-      
       this.$emit('editRole',{
-        name: this.role_.name,
-        description: this.role_.description
+        name: this.role.name,
+        description: this.role.description
       });
     }
     }

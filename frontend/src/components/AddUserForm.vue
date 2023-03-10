@@ -13,9 +13,10 @@
   
         <!-- Modal body -->
         <div class="modal-body">
-            <div class="alert alert-danger" v-for="(error, index) in errors" :key="index">
-                {{error[0]}}
-              </div>
+            <ErrorDisplay
+                v-if="errors!=null"
+                :errors="errors"
+            ></ErrorDisplay>
             <form>
                 <div class="form-group">
                   <label for="name">Fullname:</label>
@@ -68,7 +69,7 @@
 <script lang="ts">
 import { response } from 'express';
 import axiosClient from '../axios';
-
+import ErrorDisplay from './ErrorDisplay.vue';
 export default {
     emits: ['addUser'],
     data(){
@@ -82,6 +83,9 @@ export default {
             errors:[]
         }
     },
+    components:{
+        ErrorDisplay
+    },
     methods:{
         async add(){
             let user = {
@@ -94,11 +98,11 @@ export default {
             try{
                 let res = await axiosClient.post('/add-user',user) as any;
                 console.log(res);
-                if(res?.data?.message){
-                    console.log(res.response.data.message);
-                    this.setError(res.response.data.message);
-                    return
-                }
+                // if(res?.data?.message){
+                //     console.log(res.response.data.message);
+                //     this.setError(res.response.data.message);
+                //     return
+                // }
                 console.log(res.data.user);
                 this.$emit('addUser',res.data.user);
                 this.fullname = '',
