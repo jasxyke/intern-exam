@@ -51,7 +51,6 @@
       
 </template>
 <script lang="ts">
-import { roleState } from '../states/RoleStates';
 export default {   
     emits: ['editRole'],
     inject:{

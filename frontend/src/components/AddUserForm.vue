@@ -13,6 +13,9 @@
   
         <!-- Modal body -->
         <div class="modal-body">
+            <div class="alert alert-danger" v-for="(error, index) in errors" :key="index">
+                {{error[0]}}
+              </div>
             <form>
                 <div class="form-group">
                   <label for="name">Fullname:</label>
@@ -51,7 +54,7 @@
   
         <!-- Modal footer -->
         <div class="modal-footer">
-            <button type="button" class="btn btn-success" data-bs-dismiss="modal"
+            <button type="submit" class="btn btn-success"
                     @click="add"
             >Add</button>
           <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
@@ -63,6 +66,7 @@
       
 </template>
 <script lang="ts">
+import { response } from 'express';
 import axiosClient from '../axios';
 
 export default {
@@ -74,23 +78,41 @@ export default {
             password: '',
             password_confirmation: '',
             role_id: '',
-            roles: []
+            roles: [],
+            errors:[]
         }
     },
     methods:{
-        add(){
-            this.$emit('addUser',{
+        async add(){
+            let user = {
                 fullname:this.fullname,
                 email: this.email,
                 role_id:this.role_id,
                 password: this.password,
                 password_confirmation: this.password_confirmation
-            });
-            this.fullname = '',
-            this.email = '';
-            this.role_id='';
-            this.password = '';
-            this.password_confirmation = '';
+            }
+            try{
+                let res = await axiosClient.post('/add-user',user) as any;
+                console.log(res);
+                if(res?.data?.message){
+                    console.log(res.response.data.message);
+                    this.setError(res.response.data.message);
+                    return
+                }
+                console.log(res.data.user);
+                this.$emit('addUser',res.data.user);
+                this.fullname = '',
+                this.email = '';
+                this.role_id='';
+                this.password = '';
+                this.password_confirmation = '';
+            }catch(err:any){
+                console.log(err);
+                this.setError(err);
+            }
+        },
+        setError(err:any){
+            this.errors = err?.response.data.errors;
         }
     },
     async created(){

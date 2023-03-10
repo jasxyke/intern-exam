@@ -90,19 +90,7 @@ export default defineComponent({
         },
         async addUser(user:any){
             console.log(user);
-            
-            try{
-                let res = await axiosClient.post('/add-user',user);
-                console.log(res.status);
-                if(res.status == 201){
-                    console.log(res.data.user);
-                    this.users.push(res.data.user);
-                }else{
-                    console.log(res.data.message);
-                }
-            }catch(err){
-                console.log(err); 
-            }
+            this.users.push(user);
         },
         async editUser(user:any){
             try{
