@@ -8,7 +8,6 @@
 </template>
 
 <script lang="ts">
-import axios from '../axios';
 import { userState } from '../states/UserState';
 import { defineComponent } from 'vue'
 
@@ -16,23 +15,6 @@ export default defineComponent({
     data(){
         return{
             user: userState
-        }
-    },
-    created(){
-        this.getMe();
-    },
-    methods:{
-        async getMe(){
-            try{
-            const res = await axios.get('/user');
-            let user = res.data;
-            if(!user){
-                throw 'no user found';
-            }
-            userState.setUser(user);
-        }catch(err){
-            console.log(err);
-        }
         }
     }
 });
