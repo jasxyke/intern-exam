@@ -12,28 +12,29 @@
   
         <!-- Modal body -->
         <div class="modal-body">
-          <div class="alert alert-danger" v-for="(error, index) in errors" :key="index">
-                {{error[0]}}
-              </div>
+          <ErrorDisplay
+            v-if="errors != null"
+            :errors="errors"
+          ></ErrorDisplay>
             <form>
               <div class="form-group">
                 <label for="id">Id:</label>
                 <input type="text" class="form-control" placeholder="Id"
-                  v-model="id"
+                  v-model="roleState.role.id"
                   name="id" disabled
                 >
               </div>
                 <div class="form-group">
                   <label for="name">Name:</label>
                   <input type="text" class="form-control" placeholder="Role name"
-                    v-model="name"
+                    v-model="roleState.role.name"
                     name="name"
                   >
                 </div>
                 <div class="form-group">
                   <label for="desc">Description: </label>
                   <textarea name="desc" type="textarea" class="form-control" placeholder="Description"
-                  v-model="description"
+                  v-model="roleState.role.description"
                   ></textarea>
                 </div>
               </form>
@@ -41,7 +42,7 @@
   
         <!-- Modal footer -->
         <div class="modal-footer">
-            <button type="button" class="btn btn-success" data-bs-dismiss="modal"
+            <button type="button" class="btn btn-success"
                     @click.prevent="edit"
             >Edit</button>
           <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
@@ -53,32 +54,40 @@
       
 </template>
 <script lang="ts">
+import { roleState } from '../states/RoleState';
+import axiosClient from '../axios';
+import ErrorDisplay from './ErrorDisplay.vue';
 export default {   
     emits: ['editRole'],
-    props:['role'],
-    // inject:{
-    //   role:{
-    //     from:'role'
-    //   }
-    // },
+    components:{
+      ErrorDisplay
+    },
     data(){
         return{
-            name:this.role.name,
-            description: this.role.description,
-            errors: []
+            errors: null,
+            roleState
         }
     },
-    computed:{
-    },
     methods:{
-      edit(){
-      console.log('editied role');
-      this.$emit('editRole',{
-        name: this.role.name,
-        description: this.role.description
-      });
+      async edit(){  
+        try{
+          let role = {
+              id: roleState.role.id,
+              name: roleState.role.name,
+              description: roleState.role.description
+          }as any
+          let res = await axiosClient.put(`/roles/${role.id}`,role);
+          console.log('editied role');
+          this.$emit('editRole', role);
+        }catch(err:any){
+          console.log(err);
+          this.setError(err.response.data.errors);    
+        }
+    },
+    setError(err:any){
+      this.errors = err;
     }
-    }
+  }
 }
 </script>
 <style lang="">

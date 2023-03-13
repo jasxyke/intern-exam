@@ -39,10 +39,10 @@
                 </td>
             </tr>
         </table>
-        <!-- <RoleEditForm
+        <RoleEditForm
             id="editRoleModal"
             @edit-role="editRole"
-        ></RoleEditForm> -->
+        ></RoleEditForm>
         <AddRoleForm
             id="addRoleModal"
             @add-role="addRole"
@@ -56,8 +56,7 @@ import { defineComponent } from 'vue';
 import axiosClient from '../axios';
 import RoleEditForm from '../components/RoleEditForm.vue'
 import AddRoleForm from '../components/AddRoleForm.vue';
-import {computed} from 'vue';
-
+import { roleState } from '../states/RoleState';
 export default defineComponent({
     components:{
         RoleEditForm,
@@ -65,43 +64,28 @@ export default defineComponent({
     },
     data(){
         return{
-            role: null,
+            role: {id:'', name: 'roleSample', description:'descriptSample'},
             roles: [{id:'', name: 'roleSample', description:'descriptSample'}],
         }
     },
     created(){
         this.getRoles();
     },
-    provide(){
-        return{
-            role: computed(()=>this.role)
-        }
-    },
     methods:{
         setRole(roleObj:any){
             console.log(roleObj);
-            this.role = roleObj;
+            roleState.role.id = roleObj.id;
+            roleState.role.name = roleObj.name;
+            roleState.role.description = roleObj.description;
         },
         async addRole(role:any){
             this.roles.push(role);
         },
         async editRole(role:any){
-            try{
-                let res = await axiosClient.put(`/roles/${role.id}`,
-                {
-                    name: role.name,
-                    description: role.description
-                });
-                if(res.status == 200){
-                    console.log('role:',res.data);
-                }else{
-                    console.log(res.data.message);
-                    
-                }
-
-            }catch(err){
-                console.log(err);    
-            }
+            let roleIndex = this.roles.findIndex((roleItem)=>{
+                return roleItem.id === role.id;
+            })
+            this.roles[roleIndex] = role;
         },
         async deleteRole(role:any){
             try{

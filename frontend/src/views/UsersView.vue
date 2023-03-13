@@ -39,10 +39,10 @@
                 </td>
             </tr>
         </table>
-        <!-- <UserEditForm
+        <UserEditForm
             id="editUserModal"
             @edit-user="editUser"
-        ></UserEditForm> -->
+        ></UserEditForm>
         <AddUserForm
             id="addUserModal"
             @add-user="addUser"
@@ -56,16 +56,18 @@ import axiosClient from '../axios';
 import UserEditForm from '../components/UserEditForm.vue';
 import AddUserForm from '../components/AddUserForm.vue';
 import {computed} from 'vue';
+import { userState } from '../states/EditUserState';
 
 export default defineComponent({
     components:{
-        //UserEditForm,
+        UserEditForm,
         AddUserForm
     },
     data(){
         return{
             user: {},
             users: [{ 
+                id:'',
                 fullname: 'unknown', 
                 email:'unknonw',
                 role:{
@@ -85,30 +87,20 @@ export default defineComponent({
     methods:{
         setUser(userObj:any){
             console.log(userObj);
-            //userState.setuser(user);
-            this.user = userObj;
+            userState.user.id = userObj.id;
+            userState.user.fullname = userObj.fullname;
+            userState.user.email = userObj.email;
+            userState.user.role_id = userObj.role_id;        
         },
         async addUser(user:any){
             console.log(user);
             this.users.push(user);
         },
         async editUser(user:any){
-            try{
-                let res = await axiosClient.put(`/users/${user.id}`,
-                {
-                    name: user.name,
-                    email: user.email
-                });
-                if(res.status == 200){
-                    console.log('user:',res.data);
-                }else{
-                    console.log(res.data.message);
-                    
-                }
-
-            }catch(err){
-                console.log(err);    
-            }
+            let userIndex = this.users.findIndex((userItem)=>{
+                return userItem.id === user.id;
+            })
+            this.users[userIndex] = user;
         },
         async deleteUser(user:any){
             try{

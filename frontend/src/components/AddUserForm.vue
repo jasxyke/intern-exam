@@ -110,6 +110,7 @@ export default {
                 this.role_id='';
                 this.password = '';
                 this.password_confirmation = '';
+                this.setError(null);
             }catch(err:any){
                 console.log(err);
                 this.setError(err);
@@ -117,10 +118,9 @@ export default {
         },
         setError(err:any){
             this.errors = err?.response.data.errors;
-        }
-    },
-    async created(){
-        try{
+        },
+        async getRoles(){
+          try{
             let res = await axiosClient.get('/roles');
             console.log(res.status);
             if(res.status == 200){
@@ -131,6 +131,10 @@ export default {
         }catch(err){
             console.log(err); 
         }
+        }
+    },
+    async created(){
+        this.getRoles();
     }
 
 }
