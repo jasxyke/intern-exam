@@ -16,6 +16,10 @@
             v-if="errors != null"
             :errors="errors"
           ></ErrorDisplay>
+          <SuccessDisplay
+            v-if="response!==''"
+            :message="response"
+          ></SuccessDisplay>
             <form>
               <div class="form-group">
                 <label for="id">Id:</label>
@@ -57,15 +61,18 @@
 import { roleState } from '../states/RoleState';
 import axiosClient from '../axios';
 import ErrorDisplay from './ErrorDisplay.vue';
+import SuccessDisplay from './SuccessDisplay.vue';
 export default {   
     emits: ['editRole'],
     components:{
-      ErrorDisplay
+      ErrorDisplay,
+      SuccessDisplay
     },
     data(){
         return{
             errors: null,
-            roleState
+            roleState,
+            response : ''
         }
     },
     methods:{
@@ -79,13 +86,19 @@ export default {
           let res = await axiosClient.put(`/roles/${role.id}`,role);
           console.log('editied role');
           this.$emit('editRole', role);
+          this.setError(null);
+          this.setResponse('Successfully edited role!')
         }catch(err:any){
           console.log(err);
+          this.setResponse('');
           this.setError(err.response.data.errors);    
         }
     },
     setError(err:any){
       this.errors = err;
+    },
+    setResponse(msg:string){
+      this.response = msg;
     }
   }
 }

@@ -3,11 +3,12 @@
         <h2>Users</h2>
         <div class="add-box">
             <button
-                class="btn add-btn"
+                class="btn btn-success"
                 data-bs-toggle="modal" data-bs-target="#addUserModal"
             >Add user</button>
         </div>
-        <table class="table table-striped">
+        <table class="table">
+            <thead>
             <tr>
                 <th>Fullname</th>
                 <th>Email</th>
@@ -15,13 +16,15 @@
                 <th>Edit</th>
                 <th>Delete</th>
             </tr>
+            </thead>
+            <tbody>
             <tr class="pt-5 pb-5" v-if="users.length>0" v-for="(user, index) in users" :key="index">
                 <td>{{user?.fullname}}</td>
                 <td>{{user?.email}}</td>
                 <td>{{user?.role?.name}}</td>
                 <td>
                     <button 
-                        class="edit btn"
+                        class="btn-primary btn"
                         type="button"
                         @click="setUser(user)"
                         data-bs-toggle="modal" data-bs-target="#editUserModal"
@@ -30,7 +33,7 @@
                     </button>
                 </td>
                 <td>
-                    <button class="delete btn"
+                    <button class="btn-danger btn"
                         type="button"
                         @click.prevent="deleteUser(user)"
                     >
@@ -38,6 +41,7 @@
                     </button>
                 </td>
             </tr>
+            </tbody>
         </table>
         <UserEditForm
             id="editUserModal"

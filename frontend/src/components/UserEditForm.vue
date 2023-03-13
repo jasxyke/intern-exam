@@ -7,7 +7,7 @@
   
         <!-- Modal Header -->
         <div class="modal-header">
-          <h4 class="modal-title">Edit Role</h4>
+          <h4 class="modal-title">Edit User</h4>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
   
@@ -17,6 +17,10 @@
             v-if="errors != null"
             :errors="errors"
           ></ErrorDisplay>
+          <SuccessDisplay
+            v-if="response!=''"
+            :message="response"
+          ></SuccessDisplay>
             <form>
               <div class="form-group">
                 <label for="id">Id:</label>
@@ -68,17 +72,20 @@
 import {userState} from '../states/EditUserState'
 import ErrorDisplay from './ErrorDisplay.vue';
 import axiosClient from '../axios';
+import SuccessDisplay from './SuccessDisplay.vue';
 export default {   
     emits: ['editUser'],
     data(){
         return{
             userState,
             errors: null,
-            roles: []
+            roles: [],
+            response:''
         }
     },
     components:{
-      ErrorDisplay
+      ErrorDisplay,
+      SuccessDisplay
     },
     methods:{
       async edit(){
@@ -92,18 +99,22 @@ export default {
           let res = await axiosClient.put(`/users/${user.id}`,user);
           console.log(res);
           this.$emit('editUser',res.data)
-          
+          this.setError(null);
+          this.setResponse('Success fully edited user!');
       }catch(err){
+        this.setResponse('')
         this.setError(err);
       }
     },
     setError(err:any){
-      this.errors = err.response.data.errors
+      this.errors = err?.response?.data?.errors
+    },
+    setResponse(msg:string){
+      this.response = msg;
     },
     async getRoles(){
       try{
             let res = await axiosClient.get('/roles');
-            console.log(res.status);
             if(res.status == 200){
                 this.roles = res.data;
             }else{

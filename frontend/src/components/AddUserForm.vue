@@ -17,6 +17,10 @@
                 v-if="errors!=null"
                 :errors="errors"
             ></ErrorDisplay>
+            <SuccessDisplay
+              v-if="response!==''"
+              :message="response"
+            ></SuccessDisplay>
             <form>
                 <div class="form-group">
                   <label for="name">Fullname:</label>
@@ -67,9 +71,9 @@
       
 </template>
 <script lang="ts">
-import { response } from 'express';
 import axiosClient from '../axios';
 import ErrorDisplay from './ErrorDisplay.vue';
+import SuccessDisplay from './SuccessDisplay.vue';
 export default {
     emits: ['addUser'],
     data(){
@@ -80,11 +84,13 @@ export default {
             password_confirmation: '',
             role_id: '',
             roles: [],
-            errors:[]
+            errors:[],
+            response : ''
         }
     },
     components:{
-        ErrorDisplay
+        ErrorDisplay,
+        SuccessDisplay
     },
     methods:{
         async add(){
@@ -105,24 +111,32 @@ export default {
                 // }
                 console.log(res.data.user);
                 this.$emit('addUser',res.data.user);
-                this.fullname = '',
-                this.email = '';
-                this.role_id='';
-                this.password = '';
-                this.password_confirmation = '';
-                this.setError(null);
+                this.refreshForm();
+                this.setResponse('Successfully added user!');
             }catch(err:any){
-                console.log(err);
+                console.log(err); 
+                this.setResponse('');
                 this.setError(err);
             }
+        },
+        refreshForm(){
+          this.fullname = '',
+          this.email = '';
+          this.role_id='';
+          this.password = '';
+          this.password_confirmation = '';
+          this.setError(null);
+          this.setResponse('')
         },
         setError(err:any){
             this.errors = err?.response.data.errors;
         },
+        setResponse(msg:string){
+          this.response = msg
+        },
         async getRoles(){
           try{
             let res = await axiosClient.get('/roles');
-            console.log(res.status);
             if(res.status == 200){
                 this.roles = res.data;
             }else{

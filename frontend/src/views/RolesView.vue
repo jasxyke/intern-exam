@@ -3,11 +3,12 @@
         <h2>Roles</h2>
         <div class="add-box">
             <button
-                class="btn add-btn"
+                class="btn btn-success"
                 data-bs-toggle="modal" data-bs-target="#addRoleModal"
             >Add role</button>
         </div>
-        <table class="table table-striped">
+        <table class="table">
+            <thead>
             <tr>
                 <th>Id</th>
                 <th>Name</th>
@@ -15,13 +16,15 @@
                 <th>Edit</th>
                 <th>Delete</th>
             </tr>
+            </thead>
+            <tbody>
             <tr class="pt-5 pb-5" v-if="roles.length>0" v-for="(role, index) in roles" :key="index">
-                <id>{{role.id}}</id>
+                <td>{{role.id}}</td>
                 <td>{{role.name}}</td>
                 <td>{{role.description}}</td>
                 <td>
                     <button 
-                        class="edit btn"
+                        class="btn btn-info"
                         type="button"
                         @click="setRole(role)"
                         data-bs-toggle="modal" data-bs-target="#editRoleModal"
@@ -30,7 +33,7 @@
                     </button>
                 </td>
                 <td>
-                    <button class="delete btn"
+                    <button class="btn btn-danger"
                         type="button"
                         @click.prevent="deleteRole(role)"
                     >
@@ -38,6 +41,7 @@
                     </button>
                 </td>
             </tr>
+            </tbody>
         </table>
         <RoleEditForm
             id="editRoleModal"

@@ -17,6 +17,10 @@
             v-if="errors != null"
             :errors="errors"
           ></ErrorDisplay>
+          <SuccessDisplay
+            v-if="response!==''"
+            :message="response"
+          ></SuccessDisplay>
             <form>
                 <div class="form-group">
                   <label for="name">Name:</label>
@@ -49,17 +53,20 @@
 <script lang="ts">
 import axiosClient from '../axios';
 import ErrorDisplay from './ErrorDisplay.vue';
+import SuccessDisplay from './SuccessDisplay.vue';
 export default {
     emits: ['addRole'],
     data(){
         return{
             name: '',
             description: '',
-            errors:null
+            errors:null,
+            response:''
         }
     },
     components:{
-      ErrorDisplay
+      ErrorDisplay,
+      SuccessDisplay
     },
     methods:{
         async add(){
@@ -71,15 +78,25 @@ export default {
                 let res = await axiosClient.post('/add-role',role);
                 console.log(res.data);
                 this.$emit('addRole',res.data);
-                this.name = '',
-                this.description = '';
+                this.refreshForm();
+                this.setResponse('Sucessfully added role');
             }catch(err){
-                console.log(err); 
+                console.log(err);
+                this.refreshForm();
                 this.setError(err);
             }
         },
+        refreshForm(){
+          this.name = '',
+          this.description = '';
+          this.setError(null);
+          this.setResponse('');
+        },
         setError(err:any){
           this.errors = err?.response.data.errors;
+        },
+        setResponse(msg:string){
+          this.response = msg;
         }
     }
 
