@@ -48,8 +48,8 @@ import ErrorDisplay from '../components/ErrorDisplay.vue';
   export default{
     data(){
       return{
-         email: 'jasxyke23.jxc@gmail.com',
-         password: 'passwor',
+         email: '',
+         password: '',
          errors: null,
          loading: false
       }
