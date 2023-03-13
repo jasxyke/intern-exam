@@ -12,7 +12,7 @@ class AuthController extends Controller
     public function login(Request $request){
         $fields = $request->validate([
             'email' => 'required|string|email:rfc,dns',
-            'password' => 'required|string|'
+            'password' => 'required|string'
         ]);
 
         //check if email

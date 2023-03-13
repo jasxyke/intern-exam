@@ -71,7 +71,7 @@ class UsersController extends Controller
 
         $fields = $request->validate([
             'fullname' => 'required|string',
-            'email' => 'required|string|email:rfc,dns|unique:users,email',
+            'email' => 'required|string|email:rfc,dns|unique:users,email,'.$user->id,
             'role_id' => 'required|integer'
         ]);
         $user->update($request->all());
