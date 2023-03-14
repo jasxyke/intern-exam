@@ -28,7 +28,7 @@ class UsersController extends Controller
     public function store(Request $request)
     {
         $fields = $request->validate([
-            'fullname' => 'required|string',
+            'fullname' => 'required|string|unique:users,fullname',
             'email' => 'required|string|email:rfc,dns|unique:users,email',
             'password' => 'required|string|confirmed|min:8',
             'role_id' => 'required|integer'
@@ -70,7 +70,7 @@ class UsersController extends Controller
         $user = Users::find($id);
 
         $fields = $request->validate([
-            'fullname' => 'required|string',
+            'fullname' => 'required|string|unique:users,fullname,'.$user->id,
             'email' => 'required|string|email:rfc,dns|unique:users,email,'.$user->id,
             'role_id' => 'required|integer'
         ]);

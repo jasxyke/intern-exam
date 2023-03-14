@@ -19,24 +19,8 @@ export default {
         window.location.href = "/login"
         return
       }
-      this.getMe();
-    },
-    methods:{
-        async getMe(){
-            try{
-            const res = await axiosClient.get('/user');
-            let user = res.data;
-            console.log(user);
-            if(!user){
-                throw 'no user found';
-            }
-            userState.setUser(user);
-            this.$router.push('/home');
-        }catch(err){
-          console.log(err); 
-          window.location.href = "/login"
-        }
-        }
+      //window.location.href = "/home"
+      this.$router.push('/home')
     }
 }
 </script>

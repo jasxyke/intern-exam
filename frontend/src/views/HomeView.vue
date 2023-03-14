@@ -10,11 +10,31 @@
 <script lang="ts">
 import { userState } from '../states/UserState';
 import { defineComponent } from 'vue'
+import axiosClient from '../axios';
 
 export default defineComponent({
     data(){
         return{
             user: userState
+        }
+    },
+    created(){
+        this.getMe();
+    },
+    methods:{
+        async getMe(){
+            try{
+            const res = await axiosClient.get('/user');
+            let user = res.data;
+            console.log(user);
+            if(!user){
+                throw 'no user found';
+            }
+            userState.setUser(user);
+        }catch(err){
+          console.log(err); 
+          window.location.href = "/login"
+        }
         }
     }
 });
